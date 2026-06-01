@@ -6,7 +6,7 @@
 	min-height: var(--cc-button-height);
 	padding: var(--cc-button-padding);
 	font-size: var(--cc-button-font-size);
-	line-height: 1.75;
+	line-height: 20px;
 	font-weight: 500;
 	border-radius: var(--cc-button-radius);
 	cursor: pointer;
@@ -38,6 +38,15 @@
 
 	&:hover {
 		background: color-mix(in srgb, var(--cc-button-color) 8%, transparent);
+	}
+
+	.cc-dialog-container--preferences & {
+		color: var(--cc-banner-text);
+		border-color: var(--cc-banner-text);
+
+		&:hover {
+			background: color-mix(in srgb, var(--cc-banner-text) 8%, transparent);
+		}
 	}
 }
 
@@ -72,7 +81,14 @@
 	border-radius: 0;
 	padding: 8px;
 	line-height: 1;
-	color: inherit;
+	color: var(--cc-banner-text);
 	font-weight: 400;
 	transition: none;
+
+	.cc-dialog-container--preferences & {
+		position: static;
+		padding: 5px;
+		border-radius: 100px;
+		margin-inline-start: auto;
+	}
 }

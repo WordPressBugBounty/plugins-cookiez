@@ -12,6 +12,7 @@ use Cookiez\Classes\Utils;
 use Cookiez\Modules\Connect\Classes\Config;
 use Cookiez\Modules\Connect\Module as Connect;
 use Cookiez\Modules\Core\Components\Notices;
+use Cookiez\Modules\Settings\Banners\Elementor_Birthday_Banner;
 use Cookiez\Modules\Settings\Classes\Settings;
 use Throwable;
 use Exception;
@@ -49,6 +50,8 @@ class Module extends Module_Base {
 
 	public function render_app() {
 		?>
+		<?php Elementor_Birthday_Banner::get_banner( 'https://go.elementor.com/cookiez-10th-bd-sale' ); ?>
+
 		<!-- The hack required to wrap WP notifications -->
 		<div class="wrap">
 			<h1 style="display: none;" role="presentation"></h1>

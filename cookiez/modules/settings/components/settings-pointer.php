@@ -47,7 +47,7 @@ class Settings_Pointer {
 			esc_html__( 'Cookie Consent', 'cookiez' ),
 			esc_html__( 'Start configuring your cookie banner and manage user consent to improve your site compliance.', 'cookiez' ),
 			admin_url( 'admin.php?page=' . Settings_Module::SETTING_BASE_SLUG ),
-			esc_html__( 'Get Started', 'cookiez' )
+			esc_html__( 'Get started', 'cookiez' )
 		);
 
 		$allowed_tags = [

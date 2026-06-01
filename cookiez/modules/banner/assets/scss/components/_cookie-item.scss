@@ -1,18 +1,20 @@
 .cc-cookie-item {
 	display: flex;
 	flex-direction: column;
-	gap: 6px;
+	gap: 5px;
 }
 
 .cc-cookie-item-label {
-	width: 85px;
+	width: 76px;
 	flex-shrink: 0;
-	font-size: 13px;
-	opacity: 0.7;
+	font-size: 14px;
+	line-height: 18px;
+	color: #3F444B;
 }
 
 .cc-cookie-item-row {
 	display: flex;
+	align-items: flex-start;
 	gap: 12px;
 
 	&:last-child .cc-cookie-item-label {
@@ -22,6 +24,8 @@
 
 .cc-cookie-item-value {
 	flex: 1;
-	font-size: 13px;
-	line-height: 1.4;
+	font-size: 14px;
+	font-weight: 400;
+	line-height: 18px;
+	color: #0C0D0E;
 }

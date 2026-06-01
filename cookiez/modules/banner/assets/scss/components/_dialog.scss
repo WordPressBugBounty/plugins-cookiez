@@ -55,6 +55,7 @@
 		.cc-dialog-paper {
 			width: 800px;
 			margin: 0;
+			border-radius: 12px;
 			box-shadow:
 				0 -1px 14.9px rgba(0, 0, 0, 0.12),
 				0 18px 32.7px 6px rgba(0, 0, 0, 0.1);
@@ -96,13 +97,22 @@
 	position: relative;
 	display: flex;
 	align-items: center;
-	padding: 16px;
-	padding-block-end: 0;
+	padding: 24px 24px 0;
 	gap: 8px;
 	flex-shrink: 0;
 
 	&--closable {
-		padding-inline-end: 48px;
+		padding-inline-end: 56px;
+	}
+
+	.cc-dialog-container--preferences & {
+		padding: 6px 16px 6px 24px;
+		border-bottom: 1px solid rgba(147, 147, 147, 0.3);
+		min-height: 48px;
+
+		&--closable {
+			padding-inline-end: 16px;
+		}
 	}
 }
 
@@ -112,30 +122,28 @@
 	gap: 8px;
 	flex: 1;
 	min-width: 0;
-}
-
-.cc-dialog-title-icon {
-	flex-shrink: 0;
-	width: 1em;
-	height: 1em;
 	color: var(--cc-banner-text);
 }
 
-.cc-dialog-icon-wrap {
-	display: flex;
-	padding: 5px;
-	border: 1px solid color-mix(in srgb, var(--cc-banner-text) 25%, transparent);
-	border-radius: 50%;
-	flex-shrink: 0;
-}
-
 .cc-dialog-content {
-	padding: 16px;
+	padding: 16px 24px;
 	flex: 1 1 auto;
 	overflow-y: auto;
 
 	.cc-checkbox {
-		padding-block: 16px;
+		padding-block: 12px 8px;
+	}
+
+	.cc-dialog-header--closable ~ & {
+		padding-bottom: 0;
+	}
+
+	.cc-dialog-container--preferences & {
+		padding: 16px 24px 8px;
+
+		.cc-checkbox {
+			padding-block: 0;
+		}
 	}
 }
 
@@ -143,12 +151,25 @@
 	display: flex;
 	flex-wrap: wrap;
 	gap: 8px;
-	padding: 16px;
+	padding: 12px 24px;
 	align-items: stretch;
 	flex-shrink: 0;
 
 	.cc-dialog-paper--no-footer & {
 		padding-bottom: 24px;
+	}
+
+	.cc-dialog-header--closable ~ & {
+		padding-top: 8px;
+	}
+
+	.cc-dialog-container--preferences & {
+		padding: 20px 24px;
+		border-top: 1px solid rgba(147, 147, 147, 0.3);
+	}
+
+	.cc-dialog-container--preferences .cc-dialog-header--closable ~ & {
+		padding-top: 20px;
 	}
 
 	.cc-btn,

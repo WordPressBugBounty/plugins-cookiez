@@ -3,7 +3,7 @@ Contributors: elemntor
 Tags: cookie consent, compliance, GDPR, CCPA
 Requires at least: 6.7
 Tested up to: 7.0
-Stable tag: 0.0.4
+Stable tag: 0.0.5
 Requires PHP: 7.4
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
@@ -187,6 +187,11 @@ Learn more about our [terms and conditions](https://elementor.com/terms/)and [Pr
 Cookie Consent uses a 3rd party service operated by Mixpanel to collect interactions with the plugin but only for consenting users, meaning if the user has *Not* consented to "sharing data" (default) this is disabled and no collection is made.
 
 == Changelog ==
+
+= 0.0.5 - 2026-06-01 =
+* Tweak: Simplified translation strings
+* Fix: Redirection logic for Elementor Cookiez templates
+* Fix: Remove "Cookie Consent by Elementor" not working.
 
 = 0.0.4 =
 * Tewak: Updated Plugin main file title and description.

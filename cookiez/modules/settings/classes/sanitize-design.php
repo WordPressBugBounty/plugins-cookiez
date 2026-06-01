@@ -76,6 +76,9 @@ class Sanitize_Design {
 		if ( array_key_exists( 'buttonsCornerRadius', $raw ) ) {
 			$out['buttonsCornerRadius'] = min( absint( $raw['buttonsCornerRadius'] ), self::MAX_CORNER_RADIUS );
 		}
+		if ( array_key_exists( 'hidePoweredBy', $raw ) ) {
+			$out['hidePoweredBy'] = (bool) $raw['hidePoweredBy'];
+		}
 
 		self::sanitize_custom_position( $raw, $out, 'Desktop' );
 		self::sanitize_custom_position( $raw, $out, 'Mobile' );

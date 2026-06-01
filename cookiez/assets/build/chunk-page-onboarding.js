@@ -1,4 +1,4 @@
-"use strict";(globalThis.webpackChunkcookiez=globalThis.webpackChunkcookiez||[]).push([[4404],{85122(e,o,i){i.r(o),i.d(o,{default:()=>b});var a=i(78048),n=i(95231),t=i(86905),c=i(44858),l=i(49614),s=i(73500),r=i(17909),d=i(27723),k=i(10790);const h=(0,n.I)(a.A)`
+"use strict";(globalThis.webpackChunkcookiez=globalThis.webpackChunkcookiez||[]).push([[4404],{85122(e,o,i){i.r(o),i.d(o,{default:()=>b});var a=i(78048),n=i(95231),t=i(86905),c=i(29230),l=i(49614),s=i(73500),r=i(17909),d=i(27723),k=i(10790);const h=(0,n.I)(a.A)`
 	background-color: ${({theme:e})=>e.palette.background.default};
 	display: flex;
 	flex: 1;
