@@ -38,8 +38,13 @@
 	border-radius: var(--cc-reopen-radius);
 	background-color: var(--cc-reopen-bg-color);
 	color: var(--cc-reopen-color);
-	transition: background-color 0.2s;
+	transition: background-color 0.2s, transform 0.3s ease-out;
 	font-size: calc(var(--cc-reopen-icon-size) * 0.5);
+
+	&:hover,
+	&:focus-visible {
+		transform: scale(var(--cc-reopen-hover-scale));
+	}
 }
 
 .cc-btn--reopen-text {

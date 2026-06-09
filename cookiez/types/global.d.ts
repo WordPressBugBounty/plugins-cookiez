@@ -43,7 +43,6 @@ declare global {
 			content?: Record<string, unknown>;
 			cookies?: CookieItem[];
 			translations?: Record<string, string>;
-			showBanner?: boolean;
 			cookiesHash?: string;
 			elementorCookieConsentId?: number;
 			elementorPreferencesBannerId?: number;

@@ -3,7 +3,7 @@ Contributors: elemntor
 Tags: cookie consent, compliance, GDPR, CCPA
 Requires at least: 6.7
 Tested up to: 7.0
-Stable tag: 0.0.5
+Stable tag: 0.0.6
 Requires PHP: 7.4
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
@@ -11,6 +11,8 @@ License URI: https://www.gnu.org/licenses/gpl-3.0.html
 Simplify cookie consent with a customizable banner that helps you cover global privacy laws like GDPR and CCPA. Scan your site for cookies, block scripts based on visitor preferences, and keep audit-ready logs of every choice.
 
 == Description ==
+
+https://www.youtube.com/watch?v=-rPbbBeadu8
 
 = 🍪 What Cookie Consent Does =
 
@@ -41,13 +43,13 @@ After setup, you can re-scan anytime, refine your design, recategorize cookies, 
 **Banner Templates**: Start with a pre-configured template during setup, then customize to fit your site. Templates are tailored to your selected compliance model (GDPR or CCPA) so the default structure, buttons, and consent flow match your requirements from the start.
 **Layouts**: Footer bar, slide-in, or center popup.
 **Positioning**: Control where and how the banner appears on the page.
-**Styling**: Background colors, text colors, button primary and secondary colors, border radius, and button sizing, enough control to match any brand or design. 
+**Styling**: Background colors, text colors, button primary and secondary colors, border radius, and button sizing, enough control to match any brand or design.
 **Content**: Editable title, description, and button labels for the banner, preferences dialog, and revisit button. Write in your own voice.
 **Preferences Dialog**: When a visitor clicks Manage Preferences, they see a breakdown of each cookie category with descriptions and toggles. Necessary cookies are marked as always active. Visitors choose exactly which categories they\'re comfortable with.
 **Revisit Consent Button**: A persistent button visitors can click anytime to reopen the preferences dialog and change their choices.
 **Responsive**: Automatically adapts to desktop and mobile.
 **Live Preview**: Desktop and mobile preview with a device toggle. Updates in real time as you edit — no publishing and refreshing the front end.
-**Elementor Editor Integration [Requires Elementor Pro]**: Open the banner and preferences dialog in the Elementor visual editor. Drag-and-drop widgets, styling panels, and your full design system, the same workflow you use for the rest of your site. 
+**Elementor Editor Integration [Requires Elementor Pro]**: Open the banner and preferences dialog in the Elementor visual editor. Drag-and-drop widgets, styling panels, and your full design system, the same workflow you use for the rest of your site.
 **Cloud Templates [Requires Elementor Pro]**: Save a finished banner design to your cloud library and deploy it across other sites in one click. Useful for agencies and freelancers managing multiple client sites with consistent branding.
 
 = 📋 Cookie & Script Management =
@@ -66,21 +68,21 @@ After setup, you can re-scan anytime, refine your design, recategorize cookies, 
 
 **Inline Script Blocking**: An optional output buffering method catches inline and hardcoded scripts that aren\'t loaded through the standard enqueue system. Toggle it off from Advanced Settings if you want to manage inline scripts manually or minimize server-side processing.
 
-**Developer Hooks**: Advanced users and agencies can hook into the blocking engine via an MU-plugin snippet to delay dynamically injected scripts, including those created by page builders or loaded after DOM ready. 
+**Developer Hooks**: Advanced users and agencies can hook into the blocking engine via an MU-plugin snippet to delay dynamically injected scripts, including those created by page builders or loaded after DOM ready.
 
 **Scan History**: A table of past scans showing date (UTC), status (success/failed), URLs scanned, categories found, and total cookies detected.
 
 = 🔒 Compliance Settings=
 **GDPR (Opt-in)**: Non-essential scripts are blocked by default. The banner presents three options: Accept All, Reject All, and Manage Preferences. Visitors who open the preferences dialog see each cookie category with a description and a toggle. Necessary cookies are labeled \"Always Active\" with no toggle, they can\'t be disabled. Consent must be given before Analytics, Marketing, or Functional scripts execute.
 
-**CCPA (Opt-out)**: All scripts load by default. The banner includes a Do Not Sell My Data option. Visitors who opt out trigger blocking of Marketing category scripts. Global Privacy Control (GPC) signals sent by the visitor\'s browser are detected and respected automatically. 
+**CCPA (Opt-out)**: All scripts load by default. The banner includes a Do Not Sell My Data option. Visitors who opt out trigger blocking of Marketing category scripts. Global Privacy Control (GPC) signals sent by the visitor\'s browser are detected and respected automatically.
 
 **Consent Expiration**: Set how many days a visitor\'s choice is remembered (1–365 days, default 180). When the period expires, the banner reappears and the visitor is prompted to choose again. Until expiration, the previous choice is respected and the banner stays hidden.
 
-**Banner Activation**: A global toggle to enable or disable the cookie banner. 
+**Banner Activation**: A global toggle to enable or disable the cookie banner.
 
 = 🎁 Free Features =
-Everything you need for working cookie consent. 
+Everything you need for working cookie consent.
 - Guided 3-step setup wizard
 - GDPR (opt-in) and CCPA (opt-out) compliance models
 - Cookie scanning with headless browser (Chromium) detection
@@ -175,7 +177,7 @@ You can report security bugs through the Patchstack Vulnerability Disclosure Pro
 
 == External Services ==
 
-Cookie Consent requires a connection to an active Elementor account in order to: 
+Cookie Consent requires a connection to an active Elementor account in order to:
 * Identify the user and provide the user with the purchased service.
 * Log website visitors consents for "proof of consent"
 * Preform an external scan of cookies generated by and on the website.
@@ -186,7 +188,30 @@ Learn more about our [terms and conditions](https://elementor.com/terms/)and [Pr
 
 Cookie Consent uses a 3rd party service operated by Mixpanel to collect interactions with the plugin but only for consenting users, meaning if the user has *Not* consented to "sharing data" (default) this is disabled and no collection is made.
 
+== Screenshots ==
+1. **Cookie consent dashboard** - See your cookie consent status at a glance. Track total cookies, consent trends, and visitor responses all from one dashboard.
+2. **Design** - Customize your banner layout, type, and position directly in the plugin, or design a fully branded cookie banner using the Elementor Editor with Popups.
+3. **Cookie Management** - Cookies detected on your site are automatically organized into categories (Necessary, Functional, Analytics, Advertising). You can also manually add, edit, or recategorize cookies.
+4. **Content** - Edit your banner's title, cookie message, and button labels. Recommended wording is included by default, with multi-language support available with Elementor One.
+5. **Script Manager ** - Manage how third-party scripts load on your site. Set each script to Block until consent, Always block, or Never block, with automatic categorization by type.
+6. **Settings** - Select the consent model that matches your audience. Opt-in (recommended for GDPR) blocks cookies until visitors accept, while Opt-out (recommended for CCPA) enables them by default.
+7. **Consent Logs** - Track every visitor's consent response with timestamp, country, status, and accepted categories and export records as a CSV file.
+8. **Design with Elementor** - Use Elementor Popups to build a fully custom cookie banner. Adjust popup styling, borders, overlays, and close button behavior with familiar controls.
+9. Style your banner with Global Fonts to keep typography consistent with the rest of your site, ensuring your cookie banner feels like part of your design system.
+10. Apply Global Colors to banner buttons so your accept, deny, and customize options match your brand palette automatically.
+11. Use Elementor's Advanced controls to fine-tune margin, padding, width, alignment, and positioning for pixel-perfect banner design.
+
+
 == Changelog ==
+
+= 0.0.6 - 2025-06-09 =
+* Tweak: Added a grow animation effect for cookie reopen icon.
+* Tweak: Aligned cookie reopen icon with Ally icon.
+* Tweak: Improved Elementor preference color controls.
+* Fix: Added the missing "Always Active" state for Elementor-based designs.
+* Fix: Compatibility issue with Cache plugins.
+* Fix: Reopen icon appeared too small and had inconsistent border radius styling.
+* Fix: Banners could lose design settings in edge cases.
 
 = 0.0.5 - 2026-06-01 =
 * Tweak: Simplified translation strings

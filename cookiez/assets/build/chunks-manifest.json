@@ -21,7 +21,7 @@
     "lib-zod-5c372d76.js",
     "lib-zod-16c24206.js",
     "lib-emotion-cache.js",
-    "6623.js",
+    "5405.js",
     "reviews.js"
   ],
   "settings": [
@@ -47,7 +47,7 @@
     "lib-emotion-cache.js",
     "lib-popperjs-core.js",
     "lib-immer.js",
-    "6623.js",
+    "5405.js",
     "settings.js"
   ],
   "gutenberg-blocks/preferences-link/block": [

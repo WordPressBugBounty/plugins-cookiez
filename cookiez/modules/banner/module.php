@@ -74,7 +74,6 @@ class Module extends Module_Base {
 			'content'       => $content,
 			'cookies'       => $this->page_cookies,
 			'translations'  => Utils::get_translations(),
-			'showBanner'    => self::should_show_banner(),
 			'cookiesHash'   => self::get_cookies_hash(),
 		];
 
@@ -89,6 +88,10 @@ class Module extends Module_Base {
 
 
 	public static function should_blocker_run(): bool {
+		if ( is_admin() ) {
+			return false;
+		}
+
 		if ( self::is_cookiez_scanner_request() ) {
 			return false;
 		}
@@ -148,23 +151,14 @@ class Module extends Module_Base {
 	}
 
 	private function should_show_banner(): bool {
-		$settings = Settings::get( Settings::COOKIEZ_SETTINGS );
-
-		if ( array_key_exists( 'bannerDisplayStatus', $settings ) && ! $settings['bannerDisplayStatus'] ) {
-			return false;
-		}
-
-		if ( empty( $_COOKIE[ self::CONSENT_COOKIE_NAME ] ) ) {
-			return true;
-		}
-
-		$raw = sanitize_text_field( wp_unslash( $_COOKIE[ self::CONSENT_COOKIE_NAME ] ) );
+		$raw = sanitize_text_field( wp_unslash( $_COOKIE[ self::CONSENT_COOKIE_NAME ] ?? '' ) );
 		$decoded = json_decode( $raw, true );
 
 		if ( ! is_array( $decoded ) || empty( $decoded['meta'] ) ) {
 			return true;
 		}
 
+		$settings = Settings::get( Settings::COOKIEZ_SETTINGS );
 		$meta = $decoded['meta'];
 		$expiration_days = $settings['consentExpiration'] ?? 180;
 		$consent_time = $meta['timestamp'] ?? 0;
@@ -177,6 +171,16 @@ class Module extends Module_Base {
 		$stored_hash = $meta['cookiesHash'] ?? '';
 
 		return $stored_hash !== $this->get_cookies_hash();
+	}
+
+	private function clear_consent_cookie(): void {
+		setcookie(
+			self::CONSENT_COOKIE_NAME,
+			'',
+			time() - HOUR_IN_SECONDS,
+			'/'
+		);
+		unset( $_COOKIE[ self::CONSENT_COOKIE_NAME ] );
 	}
 
 	/**
@@ -239,14 +243,20 @@ class Module extends Module_Base {
 	}
 
 	public function __construct() {
-		if ( self::should_blocker_run() ) {
-			$this->register_components();
-
-			add_action( 'elementor/dynamic_tags/register', [ $this, 'register_dynamic_tag' ] );
-			add_action( 'wp_enqueue_scripts', [ $this, 'enqueue_elementor_prefs_url_action' ], 20 );
-
-			$this->page_cookies = Cookie_Entry::find_all();
-			add_action( 'wp_enqueue_scripts', [ $this, 'enqueue_scripts' ] );
+		if ( ! self::should_blocker_run() ) {
+			return;
 		}
+
+		$this->page_cookies = Cookie_Entry::find_all();
+
+		if ( $this->should_show_banner() ) {
+			$this->clear_consent_cookie();
+		}
+
+		$this->register_components();
+
+		add_action( 'elementor/dynamic_tags/register', [ $this, 'register_dynamic_tag' ] );
+		add_action( 'wp_enqueue_scripts', [ $this, 'enqueue_elementor_prefs_url_action' ], 20 );
+		add_action( 'wp_enqueue_scripts', [ $this, 'enqueue_scripts' ] );
 	}
 }

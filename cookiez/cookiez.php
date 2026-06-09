@@ -3,7 +3,7 @@
  * Plugin Name: Cookie Consent - GDPR & CCPA Cookie Banner & Consent Manager
  * Description: Simplify cookie consent with a customizable banner that helps you cover global privacy laws like GDPR and CCPA. Scan your site for cookies, block scripts based on visitor preferences, and keep audit-ready logs of every choice.
  * Plugin URI: https://elementor.com/
- * Version: 0.0.5
+ * Version: 0.0.6
  * Author: Elementor.com
  * Text Domain: cookiez
  * License: GPLv3
@@ -13,7 +13,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
 }
 
-define( 'COOKIEZ_VERSION', '0.0.5' );
+define( 'COOKIEZ_VERSION', '0.0.6' );
 define( 'COOKIEZ_PLUGIN_BASE', plugin_basename( __FILE__ ) );
 define( 'COOKIEZ_PATH', plugin_dir_path( __FILE__ ) );
 define( 'COOKIEZ_URL', plugins_url( '/', __FILE__ ) );

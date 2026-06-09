@@ -189,6 +189,7 @@ class Preferences_Content extends Widget_Base {
 				'selectors' => [
 					'{{WRAPPER}} .cookiez-preferences-content-category' => 'border-radius: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
 				],
+				'separator' => 'after',
 			]
 		);
 
@@ -224,6 +225,19 @@ class Preferences_Content extends Widget_Base {
 			]
 		);
 
+		$this->add_control(
+			'category_chevron_color',
+			[
+				'label' => esc_html__( 'Chevron Color', 'cookiez' ),
+				'type' => Controls_Manager::COLOR,
+				'default' => $design['bannerTextColor'],
+				'selectors' => [
+					'{{WRAPPER}} .cookiez-preferences-content-category__chevron' => 'color: {{VALUE}};',
+				],
+				'separator' => 'after',
+			]
+		);
+
 		$this->add_group_control(
 			Group_Control_Typography::get_type(),
 			[
@@ -250,19 +264,7 @@ class Preferences_Content extends Widget_Base {
 				'type' => Controls_Manager::COLOR,
 				'default' => $design['bannerTextColor'],
 				'selectors' => [
-					'{{WRAPPER}} .cookiez-preferences-content-category__description' => 'color: {{VALUE}};',
-				],
-			]
-		);
-
-		$this->add_control(
-			'category_chevron_color',
-			[
-				'label' => esc_html__( 'Chevron Color', 'cookiez' ),
-				'type' => Controls_Manager::COLOR,
-				'default' => $design['bannerTextColor'],
-				'selectors' => [
-					'{{WRAPPER}} .cookiez-preferences-content-category__chevron' => 'color: {{VALUE}};',
+					'{{WRAPPER}} .cookiez-preferences-content-category__description, {{WRAPPER}} .cookiez-preferences-content-category__empty, {{WRAPPER}} .cookiez-preferences-content-category__details-paper' => 'color: {{VALUE}};',
 				],
 			]
 		);
@@ -279,16 +281,7 @@ class Preferences_Content extends Widget_Base {
 					'{{WRAPPER}} input.cookiez-preferences-content-category__switch:checked:hover' => 'background: color-mix(in srgb, {{VALUE}} 8%, transparent);',
 					'{{WRAPPER}} input.cookiez-preferences-content-opt-out__input:checked::before' => 'background-color: {{VALUE}};',
 				],
-			]
-		);
-
-		$this->end_controls_section();
-
-		$this->start_controls_section(
-			'section_style_cookies_table',
-			[
-				'label' => esc_html__( 'Cookies Table', 'cookiez' ),
-				'tab' => Controls_Manager::TAB_STYLE,
+				'separator' => 'after',
 			]
 		);
 
@@ -296,7 +289,7 @@ class Preferences_Content extends Widget_Base {
 			Group_Control_Typography::get_type(),
 			[
 				'name' => 'cookie_label_typography',
-				'label' => esc_html__( 'Label Typography', 'cookiez' ),
+				'label' => esc_html__( 'Cookies Typography', 'cookiez' ),
 				'selector' => '{{WRAPPER}} .cookiez-content-cookie-row__label',
 				'fields_options' => [
 					'typography' => [ 'default' => 'custom' ],
@@ -314,7 +307,7 @@ class Preferences_Content extends Widget_Base {
 		$this->add_control(
 			'cookie_label_color',
 			[
-				'label' => esc_html__( 'Label Color', 'cookiez' ),
+				'label' => esc_html__( 'Cookies Label Color', 'cookiez' ),
 				'type' => Controls_Manager::COLOR,
 				'default' => $design['bannerTextColor'],
 				'selectors' => [
@@ -326,7 +319,7 @@ class Preferences_Content extends Widget_Base {
 		$this->add_control(
 			'cookie_value_color',
 			[
-				'label' => esc_html__( 'Value Color', 'cookiez' ),
+				'label' => esc_html__( 'Cookies Value Color', 'cookiez' ),
 				'type' => Controls_Manager::COLOR,
 				'default' => $design['bannerTextColor'],
 				'selectors' => [
@@ -404,15 +397,7 @@ class Preferences_Content extends Widget_Base {
 						<span class="cookiez-preferences-content-category__description"><?php echo esc_html( $category['description'] ); ?></span>
 					</span>
 				</button>
-				<input
-					type="checkbox"
-					class="cookiez-preferences-content-category__switch"
-					role="switch"
-					data-cookiez-preferences-content-category-toggle="<?php echo esc_attr( $category_key ); ?>"
-					<?php echo $is_necessary ? 'checked' : ''; ?>
-					<?php echo $is_disabled ? 'disabled' : ''; ?>
-					aria-label="<?php echo esc_attr( sprintf( /* translators: %s: cookie category title */ __( 'Enable %s cookies', 'cookiez' ), $category['title'] ) ); ?>"
-				/>
+				<?php $this->render_category_control( $category_key, $category, $is_disabled, $is_necessary ); ?>
 			</div>
 			<div
 				class="cookiez-preferences-content-category__panel"
@@ -423,6 +408,25 @@ class Preferences_Content extends Widget_Base {
 				<?php $this->render_category_panel( $cookies ); ?>
 			</div>
 		</div>
+		<?php
+	}
+
+	private function render_category_control( string $category_key, array $category, bool $is_disabled, bool $is_necessary ): void {
+		if ( $is_necessary ) {
+			?>
+			<span class="cookiez-preferences-content-category__always-active"><?php esc_html_e( 'Always active', 'cookiez' ); ?></span>
+			<?php
+			return;
+		}
+		?>
+		<input
+			type="checkbox"
+			class="cookiez-preferences-content-category__switch"
+			role="switch"
+			data-cookiez-preferences-content-category-toggle="<?php echo esc_attr( $category_key ); ?>"
+			<?php echo $is_disabled ? 'disabled' : ''; ?>
+			aria-label="<?php echo esc_attr( sprintf( /* translators: %s: cookie category title */ __( 'Enable %s cookies', 'cookiez' ), $category['title'] ) ); ?>"
+		/>
 		<?php
 	}
 
