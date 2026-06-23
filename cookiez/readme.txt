@@ -3,7 +3,7 @@ Contributors: elemntor
 Tags: cookie consent, compliance, GDPR, CCPA
 Requires at least: 6.7
 Tested up to: 7.0
-Stable tag: 0.0.6
+Stable tag: 0.0.7
 Requires PHP: 7.4
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
@@ -203,6 +203,16 @@ Cookie Consent uses a 3rd party service operated by Mixpanel to collect interact
 
 
 == Changelog ==
+
+= 0.0.7 - 2025-06-23 =
+* New: Added support for Google Consent Mode v2.
+* Tweak: Re-triggers the banner on change of template type.
+* Tweak: Simplify one migration flow.
+* Tweak: Update script blocker to block first script only in case of multiple matches.
+* Fix: Edit with Elementor disappears from admin bar when Cookiez plugin is enabled.
+* Fix: Cookie Dynamic Tag and Gutenberg block.
+* Fix: Custom Position for the Revisit Icon doesn't work in some cases.
+* Fix: Add loading state to Overview page.
 
 = 0.0.6 - 2025-06-09 =
 * Tweak: Added a grow animation effect for cookie reopen icon.

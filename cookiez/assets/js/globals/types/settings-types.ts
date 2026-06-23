@@ -5,6 +5,15 @@ export { TemplateType };
 
 export type GeoTargeting = 'worldwide';
 
+export type IntegrationsState = {
+	wpConsentApiActive: boolean;
+	siteKitActive: boolean;
+	siteKitConsentMode: boolean;
+	delegateGcmToSiteKit: boolean;
+	wpConsentApiInstallUrl: string;
+	wpConsentApiLearnMoreUrl: string;
+};
+
 export type SettingsState = {
 	bannerDisplayStatus: boolean;
 	disableBannerPages: string[];
@@ -17,4 +26,6 @@ export type SettingsState = {
 	isOnboardingCompleted: boolean;
 	onboardingCurrentStep: OnboardingStep;
 	designBannerInfotipDismissed: boolean;
+	integrations?: IntegrationsState;
+	isMigrationPopupDismissed: boolean;
 };

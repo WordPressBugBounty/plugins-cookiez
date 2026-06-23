@@ -31,6 +31,7 @@ class Module extends Module_Base {
 		return [
 			'Notices',
 			'Pointers',
+			'Notificator',
 		];
 	}
 

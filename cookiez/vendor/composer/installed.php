@@ -3,7 +3,7 @@
         'name' => 'elementor/cookiez',
         'pretty_version' => 'dev-main',
         'version' => 'dev-main',
-        'reference' => '7da77d554adda040dcaf1f1c8fd65db9438eb7c0',
+        'reference' => '16b568886b93fc23e1659d6771e4b087e8020024',
         'type' => 'library',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
@@ -13,7 +13,7 @@
         'elementor/cookiez' => array(
             'pretty_version' => 'dev-main',
             'version' => 'dev-main',
-            'reference' => '7da77d554adda040dcaf1f1c8fd65db9438eb7c0',
+            'reference' => '16b568886b93fc23e1659d6771e4b087e8020024',
             'type' => 'library',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),

@@ -3,6 +3,7 @@
 namespace Cookiez\Classes;
 
 use Cookiez\Classes\Services\Client;
+use Cookiez\Modules\Banner\Module as Banner_Module;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
@@ -90,6 +91,21 @@ class Utils {
 		$request_uri = isset( $_SERVER['REQUEST_URI'] ) ? esc_url_raw( wp_unslash( $_SERVER['REQUEST_URI'] ) ) : '';
 		$path = wp_parse_url( $request_uri, PHP_URL_PATH ); // removes query string
 		return rtrim( home_url( $path ), '/' );
+	}
+
+	public static function parse_consent_cookie(): ?array {
+		if ( empty( $_COOKIE[ Banner_Module::CONSENT_COOKIE_NAME ] ) ) {
+			return null;
+		}
+
+		$raw     = sanitize_text_field( wp_unslash( $_COOKIE[ Banner_Module::CONSENT_COOKIE_NAME ] ) );
+		$decoded = json_decode( $raw, true );
+
+		if ( ! is_array( $decoded ) || empty( $decoded['data']['consent'] ) || ! is_array( $decoded['data']['consent'] ) ) {
+			return null;
+		}
+
+		return $decoded['data']['consent'];
 	}
 
 	/**

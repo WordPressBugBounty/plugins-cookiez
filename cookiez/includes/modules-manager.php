@@ -20,6 +20,7 @@ final class Manager {
 			'Connect',
 			'Settings',
 			'Reviews',
+			'Deactivation',
 			'Banner',
 			'Scanner',
 			'Cookie',

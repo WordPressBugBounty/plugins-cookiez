@@ -1,6 +1,7 @@
 import ScreenManager from '@cookiez/banner/core/screen-manager';
 import type { CookieItem } from '@cookiez/globals/types/cookie-types';
 import type { PlanData } from '@cookiez/globals/types/plan-data-types';
+import type { IntegrationsState } from '@cookiez/globals/types/settings-types';
 
 export {};
 
@@ -13,8 +14,10 @@ declare global {
 			isUrlMismatch: boolean;
 			appSlug: string;
 			appVersion: string;
+			wpVersion: string;
 			isDevelopment: boolean;
 			isElementorOne: boolean;
+			hasElementorOneSubscription: boolean;
 			isRTL: boolean;
 			pluginEnv: Environment;
 			restRoot: string;
@@ -30,6 +33,7 @@ declare global {
 			isElementorProActive: boolean;
 			elementorCookieConsentId?: number;
 			elementorPreferencesBannerId?: number;
+			integrations?: IntegrationsState;
 		};
 		cookiezBannerSettings?: {
 			isDevelopment: boolean;
@@ -46,6 +50,7 @@ declare global {
 			cookiesHash?: string;
 			elementorCookieConsentId?: number;
 			elementorPreferencesBannerId?: number;
+			integrations?: IntegrationsState;
 		};
 		cookiezBanner?: {
 			screenManager?: ScreenManager;
@@ -54,6 +59,12 @@ declare global {
 		cookiezReviewData?: {
 			wpRestNonce: string;
 			reviewData?: Record<string, unknown>;
+			isRTL: boolean;
+			isDevelopment?: boolean;
+		};
+		cookiezDeactivationData?: {
+			wpRestNonce: string;
+			deactivateUrl: string;
 			isRTL: boolean;
 			isDevelopment?: boolean;
 		};
@@ -73,5 +84,8 @@ declare global {
 				};
 			};
 		};
+		gtag: (...args: unknown[]) => void;
+		wp_consent_type?: string;
+		wp_set_consent?: (category: string, status: 'allow' | 'deny') => void;
 	}
 }

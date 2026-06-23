@@ -8,6 +8,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 use Cookiez\Classes\Module_Base;
 use Cookiez\Classes\Utils;
+use Cookiez\Classes\Utils\Integration_Detect;
 use Cookiez\Modules\Banner\Dynamic_Tags\Preferences_Trigger;
 use Cookiez\Modules\Connect\Module as Connect_Module;
 use Cookiez\Modules\Cookie\Database\Cookie_Entry;
@@ -27,17 +28,25 @@ class Module extends Module_Base {
 	];
 
 	private array $page_cookies = [];
+	private array $settings = [];
 
 	public function get_name(): string {
 		return 'Banner';
 	}
 
 	public static function component_list(): array {
-		return [
+		$components = [
 			'Gutenberg_Preferences_Link_Block',
 			'Script_Blocker',
 			'Script_Blocker_Fallback',
+			'Gcm_Inline_Script',
 		];
+
+		if ( Integration_Detect::should_sync_wp_consent_api() ) {
+			$components[] = 'Wp_Consent_Api';
+		}
+
+		return $components;
 	}
 
 	/**
@@ -70,11 +79,16 @@ class Module extends Module_Base {
 			'planData'      => get_option( Settings::PLAN_DATA ),
 			'url'           => Utils::get_current_page_url(),
 			'serviceUrl'    => self::get_service_api_url(),
-			'settings'      => Settings::get( Settings::COOKIEZ_SETTINGS ),
+			'settings'      => $this->settings,
 			'content'       => $content,
 			'cookies'       => $this->page_cookies,
 			'translations'  => Utils::get_translations(),
-			'cookiesHash'   => self::get_cookies_hash(),
+			'integrations'  => [
+				'wpConsentApiActive'    => Integration_Detect::is_wp_consent_api_active(),
+				'siteKitConsentMode'    => Integration_Detect::is_site_kit_consent_mode_enabled(),
+				'delegateGcmToSiteKit' => Integration_Detect::should_delegate_gcm_to_site_kit(),
+			],
+			'cookiesHash'   => $this->get_cookies_hash(),
 		];
 
 		$banner_settings = apply_filters( 'cookiez/banner/settings', $banner_settings );
@@ -146,41 +160,9 @@ class Module extends Module_Base {
 			$this->page_cookies
 		);
 		sort( $signature );
+		$signature[] = 'template:' . ( $this->settings['templateType'] ?? 'opt-in' );
 
 		return md5( implode( '|', $signature ) );
-	}
-
-	private function should_show_banner(): bool {
-		$raw = sanitize_text_field( wp_unslash( $_COOKIE[ self::CONSENT_COOKIE_NAME ] ?? '' ) );
-		$decoded = json_decode( $raw, true );
-
-		if ( ! is_array( $decoded ) || empty( $decoded['meta'] ) ) {
-			return true;
-		}
-
-		$settings = Settings::get( Settings::COOKIEZ_SETTINGS );
-		$meta = $decoded['meta'];
-		$expiration_days = $settings['consentExpiration'] ?? 180;
-		$consent_time = $meta['timestamp'] ?? 0;
-		$is_expired = ( time() - $consent_time ) > ( $expiration_days * DAY_IN_SECONDS );
-
-		if ( $is_expired ) {
-			return true;
-		}
-
-		$stored_hash = $meta['cookiesHash'] ?? '';
-
-		return $stored_hash !== $this->get_cookies_hash();
-	}
-
-	private function clear_consent_cookie(): void {
-		setcookie(
-			self::CONSENT_COOKIE_NAME,
-			'',
-			time() - HOUR_IN_SECONDS,
-			'/'
-		);
-		unset( $_COOKIE[ self::CONSENT_COOKIE_NAME ] );
 	}
 
 	/**
@@ -243,19 +225,18 @@ class Module extends Module_Base {
 	}
 
 	public function __construct() {
+		add_action( 'elementor/dynamic_tags/register', [ $this, 'register_dynamic_tag' ] );
+
 		if ( ! self::should_blocker_run() ) {
+			$this->register_components( [ 'Gutenberg_Preferences_Link_Block' ] );
 			return;
 		}
 
+		$this->settings     = Settings::get( Settings::COOKIEZ_SETTINGS );
 		$this->page_cookies = Cookie_Entry::find_all();
-
-		if ( $this->should_show_banner() ) {
-			$this->clear_consent_cookie();
-		}
 
 		$this->register_components();
 
-		add_action( 'elementor/dynamic_tags/register', [ $this, 'register_dynamic_tag' ] );
 		add_action( 'wp_enqueue_scripts', [ $this, 'enqueue_elementor_prefs_url_action' ], 20 );
 		add_action( 'wp_enqueue_scripts', [ $this, 'enqueue_scripts' ] );
 	}

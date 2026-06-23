@@ -21,6 +21,7 @@ type PlanSubscription = {
 };
 
 type PlanSite = {
+	id: string;
 	registered_at: string;
 };
 

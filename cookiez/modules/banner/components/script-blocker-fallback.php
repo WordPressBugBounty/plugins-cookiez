@@ -45,6 +45,7 @@ class Script_Blocker_Fallback {
 		$cookie_name = esc_js( Module::CONSENT_COOKIE_NAME );
 		$always_mode = esc_js( Script_Blocking_Mode::ALWAYS );
 		$ignored_json = wp_json_encode( Script_Blocker::IGNORED_SCRIPT_PATTERNS );
+		$google_bypass_json = wp_json_encode( Script_Blocker::get_google_bypass_patterns() );
 
 		return "(function() {
 	const dataTag = document.getElementById('{$data_tag_id}');
@@ -75,6 +76,29 @@ class Script_Blocker_Fallback {
 	const consent = readConsent();
 	const ALWAYS_MODE = '{$always_mode}';
 	const IGNORED_PATTERNS = {$ignored_json};
+	const GOOGLE_BYPASS_PATTERNS = {$google_bypass_json};
+	const FILE_TYPE = 'file';
+	const INLINE_TYPE = 'inline';
+	const usedPatterns = new Set();
+
+	const matchesPatterns = (src, outerHtml, patterns) =>
+		patterns.some((pattern) => (src && src.indexOf(pattern) !== -1) || outerHtml.indexOf(pattern) !== -1);
+
+	const findUnusedPattern = (type, haystack, patterns) => {
+		for (let i = 0; i < patterns.length; i++) {
+			const pattern = patterns[i];
+
+			if (usedPatterns.has(type + ':' + pattern)) {
+				continue;
+			}
+
+			if (haystack.indexOf(pattern) !== -1) {
+				return pattern;
+			}
+		}
+
+		return null;
+	};
 
 	const blockScript = (script) => {
 		if (script.type === 'application/json' || script.type === 'text/plain') {
@@ -88,8 +112,10 @@ class Script_Blocker_Fallback {
 		}
 
 		const outerHtml = script.outerHTML || '';
+		const isGoogleScript = matchesPatterns(src, outerHtml, GOOGLE_BYPASS_PATTERNS);
 
 		for (const mode in blockedScripts) {
+			const isBypassed = mode !== ALWAYS_MODE && isGoogleScript;
 			const categories = blockedScripts[mode];
 
 			for (const category in categories) {
@@ -98,22 +124,37 @@ class Script_Blocker_Fallback {
 				}
 
 				const { files = [], inline = [] } = categories[category];
-				const matchesFileSrc = src && files.some((url) => src.indexOf(url) !== -1);
-				const matchesInline = inline.some((snippet) => outerHtml.indexOf(snippet) !== -1);
+				const matchedFile = src ? findUnusedPattern(FILE_TYPE, src, files) : null;
 
-				if (!matchesFileSrc && !matchesInline) {
-					continue;
-				}
+				if (matchedFile !== null) {
+					if (isBypassed) {
+						return;
+					}
 
-				if (matchesFileSrc) {
+					usedPatterns.add(FILE_TYPE + ':' + matchedFile);
 					script.setAttribute('data-cc-src', src);
 					script.removeAttribute('src');
+					script.type = 'text/plain';
+					script.setAttribute('data-cc-category', category);
+					script.setAttribute('data-cc-mode', mode);
+
+					return;
 				}
 
-				script.type = 'text/plain';
-				script.setAttribute('data-cc-category', category);
-				script.setAttribute('data-cc-mode', mode);
-				return;
+				const matchedInline = findUnusedPattern(INLINE_TYPE, outerHtml, inline);
+
+				if (matchedInline !== null) {
+					if (isBypassed) {
+						return;
+					}
+
+					usedPatterns.add(INLINE_TYPE + ':' + matchedInline);
+					script.type = 'text/plain';
+					script.setAttribute('data-cc-category', category);
+					script.setAttribute('data-cc-mode', mode);
+
+					return;
+				}
 			}
 		}
 	};

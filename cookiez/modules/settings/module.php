@@ -9,6 +9,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 use Cookiez\Classes\Logger;
 use Cookiez\Classes\Module_Base;
 use Cookiez\Classes\Utils;
+use Cookiez\Classes\Utils\Integration_Detect;
 use Cookiez\Modules\Connect\Classes\Config;
 use Cookiez\Modules\Connect\Module as Connect;
 use Cookiez\Modules\Core\Components\Notices;
@@ -24,6 +25,7 @@ use WP_Error;
 class Module extends Module_Base {
 	const SETTING_BASE_SLUG = 'cookiez-settings';
 	const SETTING_CAPABILITY = 'manage_options';
+	const WP_CONSENT_API_LEARN_MORE_URL = 'https://go.elementor.com/cookie-consent-with-site-kit';
 
 	public function get_name(): string {
 		return 'Settings';
@@ -51,7 +53,6 @@ class Module extends Module_Base {
 	public function render_app() {
 		?>
 		<?php Elementor_Birthday_Banner::get_banner( 'https://go.elementor.com/cookiez-10th-bd-sale' ); ?>
-
 		<!-- The hack required to wrap WP notifications -->
 		<div class="wrap">
 			<h1 style="display: none;" role="presentation"></h1>
@@ -108,17 +109,27 @@ class Module extends Module_Base {
 			'isDevelopment' => defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG,
 			'appSlug' => Config::PLUGIN_SLUG,
 			'appVersion' => COOKIEZ_VERSION,
+			'wpVersion' => get_bloginfo( 'version' ),
 			'isRTL' => is_rtl(),
 			'dateFormat' => get_option( 'date_format', 'F j, Y' ),
 			'timeFormat' => get_option( 'time_format', 'g:i a' ),
 			'translations' => Utils::get_translations(),
 			'isElementorOne' => self::is_elementor_one(),
+			'hasElementorOneSubscription' => self::has_elementor_one_subscription(),
 			'settings' => Settings::get( Settings::COOKIEZ_SETTINGS ),
 			'content' => Settings::get( Settings::COOKIEZ_CONTENT ),
 			'planData' => get_option( Settings::PLAN_DATA ),
 			'planScope' => get_option( Settings::PLAN_SCOPE ),
 			'isElementorActive' => defined( 'ELEMENTOR_VERSION' ),
 			'isElementorProActive' => defined( 'ELEMENTOR_PRO_VERSION' ),
+			'integrations' => [
+				'wpConsentApiActive'     => Integration_Detect::is_wp_consent_api_active(),
+				'siteKitActive'          => Integration_Detect::is_site_kit_active(),
+				'siteKitConsentMode'     => Integration_Detect::is_site_kit_consent_mode_enabled(),
+				'delegateGcmToSiteKit'   => Integration_Detect::should_delegate_gcm_to_site_kit(),
+				'wpConsentApiInstallUrl' => admin_url( 'plugin-install.php?s=wp-consent-api&tab=search&type=term' ),
+				'wpConsentApiLearnMoreUrl' => self::WP_CONSENT_API_LEARN_MORE_URL,
+			],
 		];
 
 		$settings_data = apply_filters( 'cookiez/settings/data', $settings_data );
@@ -131,11 +142,20 @@ class Module extends Module_Base {
 	}
 
 	/**
-	 * Check if elementor one
+	 * Check if cookie consent is connected to elementor one
 	 * @return bool
 	 */
 	public static function is_elementor_one(): bool {
 		return Connect::get_connect()->get_config( 'app_type' ) !== Config::APP_TYPE;
+	}
+
+	/**
+	 * Check if user generally has an active Elementor One subscription,
+	 * @return bool
+	 */
+	public static function has_elementor_one_subscription(): bool {
+		$one_facade = \ElementorOne\Admin\Helpers\Utils::get_one_connect();
+		return $one_facade && $one_facade->utils()->is_connected();
 	}
 
 	/**
@@ -387,6 +407,7 @@ class Module extends Module_Base {
 	 */
 	public function register_notices( Notices $notice_manager ): void {
 		if ( self::is_elementor_one() ) {
+			$this->register_one_notices( $notice_manager );
 			return;
 		}
 
@@ -397,6 +418,28 @@ class Module extends Module_Base {
 		$notices = [
 			'Quota_80',
 			'Quota_100',
+			'Site_Kit_Wp_Consent_Api',
+		];
+
+		foreach ( $notices as $notice ) {
+			$class_name = 'Cookiez\Modules\Settings\Notices\\' . $notice;
+			$notice_manager->register_notice( new $class_name() );
+		}
+	}
+
+		/**
+	 * Register quota notices with the notice manager.
+	 *
+	 * @param Notices $notice_manager The notice manager instance.
+	 * @return void
+	 */
+	public function register_one_notices( Notices $notice_manager ): void {
+		if ( ! self::is_elementor_one() ) {
+			return;
+		}
+
+		$notices = [
+			'Site_Kit_Wp_Consent_Api',
 		];
 
 		foreach ( $notices as $notice ) {

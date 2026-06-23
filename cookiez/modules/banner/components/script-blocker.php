@@ -6,8 +6,9 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-use Cookiez\Modules\Banner\Module;
 use Cookiez\Classes\Enums\Cookie_Category;
+use Cookiez\Classes\Utils;
+use Cookiez\Modules\Banner\Module;
 use Cookiez\Modules\Script\Classes\Enums\Script_Blocking_Mode;
 use Cookiez\Modules\Script\Database\Script_Entry;
 use Cookiez\Modules\Settings\Classes\Settings;
@@ -20,11 +21,26 @@ class Script_Blocker {
 		'plugins/cookiez/assets/build/gutenberg-blocks/preferences-link/frontend.js',
 	];
 
+	private const PATTERN_TYPE_FILE = 'file';
+	private const PATTERN_TYPE_INLINE = 'inline';
+
+	public const GOOGLE_SCRIPT_PATTERNS = [
+		'googletagmanager.com',
+		'google-analytics.com',
+		'googleadservices.com',
+		'googlesyndication.com',
+		'doubleclick.net',
+		'google.com/ccm',
+		'gtag/js',
+	];
+
 	//TODO: Remove once the scanner is fixed (see APP-2852)
 	private const IGNORED_SCRIPT_VALUES = [ '/' ];
 
 	private array $blockable_scripts = [];
 	private array $consent = [];
+	private array $used_patterns = [];
+	private array $google_bypass_patterns = [];
 	private ?int $output_buffer_base_level = null;
 
 	public function start_buffering(): void {
@@ -75,13 +91,12 @@ class Script_Blocker {
 			}
 
 			$raw_src = $processor->get_attribute( 'src' );
-
-			if ( $this->is_ignored_script( $raw_src ) ) {
-				continue;
-			}
-
 			$inline = $processor->get_modifiable_text();
 			$outer_html = $this->reconstruct_script_outer_html( $processor, $inline );
+
+			if ( $this->matches_patterns( $raw_src, $outer_html, self::IGNORED_SCRIPT_PATTERNS ) ) {
+				continue;
+			}
 			$meta = $this->get_blocked_script_meta( $raw_src, $outer_html );
 
 			if ( null === $meta ) {
@@ -123,18 +138,32 @@ class Script_Blocker {
 		return '<script' . $attr_string . '>' . $inline . '</script>';
 	}
 
-	private function is_ignored_script( ?string $raw_src ): bool {
-		if ( empty( $raw_src ) ) {
+	private function matches_patterns( ?string $raw_src, string $outer_html, array $patterns ): bool {
+		if ( empty( $patterns ) ) {
 			return false;
 		}
 
-		foreach ( self::IGNORED_SCRIPT_PATTERNS as $pattern ) {
-			if ( str_contains( (string) $raw_src, $pattern ) ) {
+		foreach ( $patterns as $pattern ) {
+			if ( ! empty( $raw_src ) && str_contains( (string) $raw_src, $pattern ) ) {
+				return true;
+			}
+
+			if ( str_contains( $outer_html, $pattern ) ) {
 				return true;
 			}
 		}
 
 		return false;
+	}
+
+	public static function should_allow_google_before_consent(): bool {
+		$settings = Settings::get( Settings::COOKIEZ_SETTINGS );
+
+		return ! empty( $settings['supportGcm'] ) && ! empty( $settings['googleTagsBeforeConsent'] );
+	}
+
+	public static function get_google_bypass_patterns(): array {
+		return self::should_allow_google_before_consent() ? self::GOOGLE_SCRIPT_PATTERNS : [];
 	}
 
 	private function is_exempt_script_type( ?string $type_attribute ): bool {
@@ -149,21 +178,51 @@ class Script_Blocker {
 	}
 
 	private function get_blocked_script_meta( ?string $raw_src, string $outer_html ): ?array {
+		$is_google_script = $this->matches_patterns( $raw_src, $outer_html, $this->google_bypass_patterns );
+
 		foreach ( $this->blockable_scripts as $mode => $categories ) {
+			$is_bypassed = Script_Blocking_Mode::ALWAYS !== $mode && $is_google_script;
+
 			foreach ( $categories as $category => $scripts ) {
 				if ( Script_Blocking_Mode::ALWAYS !== $mode && ! empty( $this->consent[ $category ] ) ) {
 					continue;
 				}
 
-				if ( $raw_src && $this->matches_file_scripts( (string) $raw_src, $scripts['files'] ?? [] ) ) {
-					return [
-						'category' => $category,
-						'mode'     => $mode,
-						'file_src' => (string) $raw_src,
-					];
+				if ( $raw_src ) {
+					$matched_file = $this->find_unused_pattern(
+						self::PATTERN_TYPE_FILE,
+						$raw_src,
+						$scripts['files'] ?? []
+					);
+
+					if ( null !== $matched_file ) {
+						if ( $is_bypassed ) {
+							return null;
+						}
+
+						$this->mark_pattern_used( self::PATTERN_TYPE_FILE, $matched_file );
+
+						return [
+							'category' => $category,
+							'mode'     => $mode,
+							'file_src' => (string) $raw_src,
+						];
+					}
 				}
 
-				if ( $this->matches_inline_scripts( $outer_html, $scripts['inline'] ?? [] ) ) {
+				$matched_inline = $this->find_unused_pattern(
+					self::PATTERN_TYPE_INLINE,
+					$outer_html,
+					$scripts['inline'] ?? []
+				);
+
+				if ( null !== $matched_inline ) {
+					if ( $is_bypassed ) {
+						return null;
+					}
+
+					$this->mark_pattern_used( self::PATTERN_TYPE_INLINE, $matched_inline );
+
 					return [
 						'category' => $category,
 						'mode'     => $mode,
@@ -176,43 +235,30 @@ class Script_Blocker {
 		return null;
 	}
 
-	private function matches_file_scripts( string $src, array $files ): bool {
-		foreach ( $files as $url ) {
-			if ( str_contains( $src, $url ) ) {
-				return true;
+	private function find_unused_pattern( string $type, string $haystack, array $patterns ): ?string {
+		foreach ( $patterns as $pattern ) {
+			if ( $this->is_pattern_used( $type, $pattern ) ) {
+				continue;
+			}
+
+			if ( str_contains( $haystack, $pattern ) ) {
+				return $pattern;
 			}
 		}
 
-		return false;
+		return null;
 	}
 
-	private function matches_inline_scripts( string $content, array $snippets ): bool {
-		foreach ( $snippets as $snippet ) {
-			if ( str_contains( $content, $snippet ) ) {
-				return true;
-			}
-		}
+	private function is_pattern_used( string $type, string $pattern ): bool {
+		return isset( $this->used_patterns[ $type . ':' . $pattern ] );
+	}
 
-		return false;
+	private function mark_pattern_used( string $type, string $pattern ): void {
+		$this->used_patterns[ $type . ':' . $pattern ] = true;
 	}
 
 	public static function parse_consent_cookie(): array {
-		if ( empty( $_COOKIE[ Module::CONSENT_COOKIE_NAME ] ) ) {
-			return [];
-		}
-
-		$raw = sanitize_text_field( wp_unslash( $_COOKIE[ Module::CONSENT_COOKIE_NAME ] ) );
-		$decoded = json_decode( $raw, true );
-
-		if ( ! is_array( $decoded ) ) {
-			return [];
-		}
-
-		if ( empty( $decoded['data']['consent'] ) || ! is_array( $decoded['data']['consent'] ) ) {
-			return [];
-		}
-
-		return $decoded['data']['consent'];
+		return Utils::parse_consent_cookie() ?? [];
 	}
 
 	public static function get_blockable_scripts(): array {
@@ -260,6 +306,8 @@ class Script_Blocker {
 		$this->blockable_scripts = self::get_blockable_scripts();
 
 		$this->consent = self::parse_consent_cookie();
+
+		$this->google_bypass_patterns = self::get_google_bypass_patterns();
 
 		$has_always = ! empty( $this->blockable_scripts[ Script_Blocking_Mode::ALWAYS ] );
 

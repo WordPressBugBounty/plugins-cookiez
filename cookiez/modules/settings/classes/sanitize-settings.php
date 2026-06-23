@@ -65,6 +65,10 @@ class Sanitize_Settings {
 			$out['designBannerInfotipDismissed'] = (bool) $raw['designBannerInfotipDismissed'];
 		}
 
+		if ( array_key_exists( 'isMigrationPopupDismissed', $raw ) ) {
+			$out['isMigrationPopupDismissed'] = (bool) $raw['isMigrationPopupDismissed'];
+		}
+
 		if ( array_key_exists( 'isOnboardingCompleted', $raw ) ) {
 			$out['isOnboardingCompleted'] = (bool) $raw['isOnboardingCompleted'];
 		}
