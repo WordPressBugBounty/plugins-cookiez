@@ -11,6 +11,12 @@ import RadioGroup from '@elementor/ui/RadioGroup';
 import TextField from '@elementor/ui/TextField';
 import Typography from '@elementor/ui/Typography';
 import { styled } from '@elementor/ui/styles';
+import { mixpanelEvents, mixpanelService } from '@cookiez/globals';
+import {
+	PLUGIN_DEACTIVATED_BASE_PROPS,
+	PLUGIN_DEACTIVATED_SKIP_DESC,
+	PLUGIN_DEACTIVATED_SUBMIT_DESC,
+} from '@cookiez/globals/services/mixpanel/mixpanel-props';
 import { Fragment, useState } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
 
@@ -38,20 +44,27 @@ const DeactivationDialog = ({ isOpen, onClose }: DeactivationDialogProps) => {
 	};
 
 	const handleSubmit = async () => {
-		if (!selectedReason) {
-			handleDeactivate();
-			return;
+		if (selectedReason) {
+			setIsSubmitting(true);
 		}
 
-		setIsSubmitting(true);
+		mixpanelService.sendEvent(mixpanelEvents.pluginDeactivated, {
+			...PLUGIN_DEACTIVATED_BASE_PROPS,
+			target_value: 'submit_and_deactivate',
+			interaction_desc: PLUGIN_DEACTIVATED_SUBMIT_DESC,
+			plan_type: window.cookiezDeactivationData?.planData?.plan?.name,
+			reason: selectedReason ?? null,
+		});
 
-		try {
-			await sendFeedback({
-				reason: selectedReason,
-				additional_data: additionalFeedback || undefined,
-			});
-		} catch {
-			// Continue with deactivation even if feedback fails
+		if (selectedReason) {
+			try {
+				await sendFeedback({
+					reason: selectedReason,
+					additional_data: additionalFeedback || undefined,
+				});
+			} catch {
+				// Continue with deactivation even if feedback fails
+			}
 		}
 
 		handleDeactivate();
@@ -59,6 +72,12 @@ const DeactivationDialog = ({ isOpen, onClose }: DeactivationDialogProps) => {
 
 	const handleSkip = () => {
 		handleDeactivate();
+		mixpanelService.sendEvent(mixpanelEvents.pluginDeactivated, {
+			...PLUGIN_DEACTIVATED_BASE_PROPS,
+			target_value: 'skip_and_deactivate',
+			interaction_desc: PLUGIN_DEACTIVATED_SKIP_DESC,
+			plan_type: window.cookiezDeactivationData?.planData?.plan?.name,
+		});
 	};
 
 	return (

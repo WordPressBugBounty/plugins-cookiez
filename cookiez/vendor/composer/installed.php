@@ -3,7 +3,7 @@
         'name' => 'elementor/cookiez',
         'pretty_version' => 'dev-main',
         'version' => 'dev-main',
-        'reference' => '16b568886b93fc23e1659d6771e4b087e8020024',
+        'reference' => '8de76ddec56bc5be51c54d899b2bae47f6be4d9e',
         'type' => 'library',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
@@ -13,7 +13,7 @@
         'elementor/cookiez' => array(
             'pretty_version' => 'dev-main',
             'version' => 'dev-main',
-            'reference' => '16b568886b93fc23e1659d6771e4b087e8020024',
+            'reference' => '8de76ddec56bc5be51c54d899b2bae47f6be4d9e',
             'type' => 'library',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),
@@ -29,8 +29,8 @@
             'dev_requirement' => false,
         ),
         'elementor/wp-one-package' => array(
-            'pretty_version' => '1.0.62',
-            'version' => '1.0.62.0',
+            'pretty_version' => '1.0.66',
+            'version' => '1.0.66.0',
             'reference' => null,
             'type' => 'library',
             'install_path' => __DIR__ . '/../elementor/wp-one-package',

@@ -8,6 +8,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 use Cookiez\Classes\Module_Base;
 use Cookiez\Classes\Utils;
+use Cookiez\Modules\Settings\Classes\Settings;
 
 /**
  * Deactivation feedback module
@@ -57,6 +58,11 @@ class Module extends Module_Base {
 				'deactivateUrl' => '',
 				'isRTL'         => is_rtl(),
 				'isDevelopment' => defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG,
+				'pluginEnv'     => apply_filters( 'cookiez_settings_plugin_env', 'production' ),
+				'appVersion'    => COOKIEZ_VERSION,
+				'wpVersion'     => get_bloginfo( 'version' ),
+				'planData'      => get_option( Settings::PLAN_DATA ),
+				'planScope'     => get_option( Settings::PLAN_SCOPE ),
 			]
 		);
 	}

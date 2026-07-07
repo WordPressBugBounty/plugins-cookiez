@@ -67,6 +67,11 @@ declare global {
 			deactivateUrl: string;
 			isRTL: boolean;
 			isDevelopment?: boolean;
+			pluginEnv?: Environment;
+			appVersion?: string;
+			wpVersion?: string;
+			planData?: PlanData;
+			planScope?: string[];
 		};
 		elementorFrontend?: {
 			documentsManager?: {

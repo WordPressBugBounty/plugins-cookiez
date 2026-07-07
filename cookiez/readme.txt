@@ -3,7 +3,7 @@ Contributors: elemntor
 Tags: cookie consent, compliance, GDPR, CCPA
 Requires at least: 6.7
 Tested up to: 7.0
-Stable tag: 0.0.7
+Stable tag: 0.0.8
 Requires PHP: 7.4
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
@@ -85,6 +85,7 @@ After setup, you can re-scan anytime, refine your design, recategorize cookies, 
 Everything you need for working cookie consent.
 - Guided 3-step setup wizard
 - GDPR (opt-in) and CCPA (opt-out) compliance models
+- Google Consent Mode v2 – Automatically send consent signals to Google so analytics and ad measurement continue working after consent is deployed
 - Cookie scanning with headless browser (Chromium) detection
 - Automatic categorization into Necessary, Analytics, Marketing, Functional, and Uncategorized
 - Automatic script blocking for non-essential cookies
@@ -116,11 +117,10 @@ Everything you need for working cookie consent.
 - **Disable Banner on Specific Pages**: Prevent the banner from loading on pages you select (e.g., internal dashboards, login screens).
 - **Elementor Editor Design [Requires Elementor Pro]**: Open the cookie banner and preferences dialog in the full Elementor visual editor. Drag-and-drop layout, widget-level control, and live editing.
 - **Cloud Templates [Requires Elementor Pro]**: Save banner designs to your cloud library and deploy them across multiple sites instantly.
+- **Google Tag Manager Integration [Premium]** – Pass consent signals to your GTM container for tag-level consent control.
 
 = 🔜 Coming Soon =
-- **Google Consent Mode v2** – Automatically send consent signals to Google so analytics and ad measurement continue working after consent is deployed.
 - **Cookie Policy Generator** – Auto-generate a cookie policy page based on the cookies detected on your site.
-- **Google Tag Manager Integration [Premium]** – Pass consent signals to your GTM container for tag-level consent control.
 - **Automatic and Scheduled Scans [Premium]** – Set scans to run on a recurring schedule so your cookie list stays current without manual intervention.
 - **Geo-Targeting [Premium]** – Automatically display the correct banner based on visitor location. GDPR opt-in for EU visitors, CCPA opt-out for US visitors without manual configuration.
 - **Multi-Region Banner Management [Premium]** – Configure and manage separate banner designs and compliance rules for different geographic regions from one dashboard.
@@ -203,6 +203,11 @@ Cookie Consent uses a 3rd party service operated by Mixpanel to collect interact
 
 
 == Changelog ==
+= 0.0.8 - 2025-06-30 =
+* Tweak: Improved Elementor One migration flow.
+* Tweak: Updated Elementor packages.
+* Fix: Scroll to Google consent mode not working correctly.
+* Fix: Banner blocking when there are no cookies.
 
 = 0.0.7 - 2025-06-23 =
 * New: Added support for Google Consent Mode v2.

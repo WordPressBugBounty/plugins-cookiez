@@ -20,9 +20,7 @@ const UserFeedbackForm = () => {
 	const { close, currentPage, isOpened } = useReviewSettings();
 
 	const handleReviewPromptEntered = () => {
-		mixpanelService.init().then(() => {
-			mixpanelService.sendEvent(mixpanelEvents.reviewPromptShown, {});
-		});
+		mixpanelService.sendEvent(mixpanelEvents.reviewPromptShown, {});
 	};
 
 	const id = isOpened ? 'reviews-popover' : undefined;
