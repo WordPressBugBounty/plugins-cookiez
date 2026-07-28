@@ -9,9 +9,11 @@ if ( ! defined( 'ABSPATH' ) ) {
 class Sanitize_Settings {
 	private const ALLOWED_ONBOARDING_STEPS = [ 'step_one', 'step_two', 'step_three' ];
 	private const ALLOWED_TEMPLATE_TYPES = [ 'opt-in', 'opt-out', 'opt-in-out' ];
-	private const ALLOWED_GEO_TARGETING = [ 'worldwide' ];
+	private const ALLOWED_GEO_TARGETING = [ 'worldwide', 'adaptive' ];
+	private const ALLOWED_FALLBACK_MODELS = [ 'opt-in', 'opt-out', 'no-banner' ];
 	private const MAX_CONSENT_EXPIRATION_DAYS = 365;
 	private const MIN_CONSENT_EXPIRATION_DAYS = 1;
+	private const ISO_CODE_PATTERN = '/^[a-z]{2}$/';
 
 	/**
 	 * @param array<string, mixed> $raw
@@ -36,6 +38,15 @@ class Sanitize_Settings {
 
 		if ( isset( $raw['geoTargeting'] ) && in_array( $raw['geoTargeting'], self::ALLOWED_GEO_TARGETING, true ) ) {
 			$out['geoTargeting'] = $raw['geoTargeting'];
+		}
+
+		$template_type = $raw['templateType'] ?? null;
+		if ( 'opt-in-out' === $template_type && isset( $raw['regionalRules'] ) && is_array( $raw['regionalRules'] ) ) {
+			$out['regionalRules'] = self::sanitize_regional_rules( $raw['regionalRules'] );
+		}
+
+		if ( array_key_exists( 'regionalRulesAlertDismissed', $raw ) ) {
+			$out['regionalRulesAlertDismissed'] = (bool) $raw['regionalRulesAlertDismissed'];
 		}
 
 		if ( array_key_exists( 'consentExpiration', $raw ) ) {
@@ -78,5 +89,50 @@ class Sanitize_Settings {
 		}
 
 		return $out;
+	}
+
+	/**
+	 * @param array<string, mixed> $raw_rules
+	 * @return array<string, mixed>
+	 */
+	private static function sanitize_regional_rules( array $raw_rules ): array {
+		$opt_in  = self::sanitize_country_codes( $raw_rules['optInCountries'] ?? [] );
+		$opt_out = self::sanitize_country_codes( $raw_rules['optOutCountries'] ?? [] );
+		$no_ban  = self::sanitize_country_codes( $raw_rules['noBannerCountries'] ?? [] );
+
+		$opt_out = array_values( array_diff( $opt_out, $opt_in ) );
+		$no_ban  = array_values( array_diff( $no_ban, $opt_in, $opt_out ) );
+
+		$fallback = $raw_rules['fallbackModel'] ?? 'opt-in';
+		if ( ! in_array( $fallback, self::ALLOWED_FALLBACK_MODELS, true ) ) {
+			$fallback = 'opt-in';
+		}
+
+		return [
+			'optInCountries'   => $opt_in,
+			'optOutCountries'  => $opt_out,
+			'noBannerCountries' => $no_ban,
+			'fallbackModel'    => $fallback,
+		];
+	}
+
+	/**
+	 * @param mixed $raw
+	 * @return string[]
+	 */
+	private static function sanitize_country_codes( $raw ): array {
+		if ( ! is_array( $raw ) ) {
+			return [];
+		}
+
+		return array_values( array_unique( array_filter(
+			array_map(
+				static function ( $code ) {
+					$code = strtolower( sanitize_text_field( (string) $code ) );
+					return preg_match( self::ISO_CODE_PATTERN, $code ) ? $code : null;
+				},
+				$raw
+			)
+		) ) );
 	}
 }

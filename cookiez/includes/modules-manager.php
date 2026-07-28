@@ -19,6 +19,7 @@ final class Manager {
 			'Core',
 			'Connect',
 			'Settings',
+			'Maxmind',
 			'Reviews',
 			'Deactivation',
 			'Banner',

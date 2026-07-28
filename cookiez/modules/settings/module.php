@@ -13,6 +13,7 @@ use Cookiez\Classes\Utils\Integration_Detect;
 use Cookiez\Modules\Connect\Classes\Config;
 use Cookiez\Modules\Connect\Module as Connect;
 use Cookiez\Modules\Core\Components\Notices;
+use Cookiez\Modules\Maxmind\Classes\Maxmind_Settings;
 use Cookiez\Modules\Settings\Banners\Elementor_Birthday_Banner;
 use Cookiez\Modules\Settings\Classes\Settings;
 use Throwable;
@@ -117,6 +118,7 @@ class Module extends Module_Base {
 			'isElementorOne' => self::is_elementor_one(),
 			'hasElementorOneSubscription' => self::has_elementor_one_subscription(),
 			'settings' => Settings::get( Settings::COOKIEZ_SETTINGS ),
+			'maxmindLicenseKey' => Maxmind_Settings::masked(),
 			'content' => Settings::get( Settings::COOKIEZ_CONTENT ),
 			'planData' => get_option( Settings::PLAN_DATA ),
 			'planScope' => get_option( Settings::PLAN_SCOPE ),
@@ -171,6 +173,7 @@ class Module extends Module_Base {
 				'isDevelopment' => defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG,
 				'siteUrl' => wp_parse_url( get_site_url(), PHP_URL_HOST ),
 				'settings' => Settings::get( Settings::COOKIEZ_SETTINGS ),
+				'maxmindLicenseKey' => Maxmind_Settings::masked(),
 			],
 			is_array( $content ) ? $content : []
 		);

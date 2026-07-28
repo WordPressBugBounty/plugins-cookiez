@@ -3,7 +3,7 @@ Contributors: elemntor
 Tags: cookie consent, compliance, GDPR, CCPA
 Requires at least: 6.7
 Tested up to: 7.0
-Stable tag: 0.0.8
+Stable tag: 0.0.9
 Requires PHP: 7.4
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
@@ -118,12 +118,13 @@ Everything you need for working cookie consent.
 - **Elementor Editor Design [Requires Elementor Pro]**: Open the cookie banner and preferences dialog in the full Elementor visual editor. Drag-and-drop layout, widget-level control, and live editing.
 - **Cloud Templates [Requires Elementor Pro]**: Save banner designs to your cloud library and deploy them across multiple sites instantly.
 - **Google Tag Manager Integration [Premium]** – Pass consent signals to your GTM container for tag-level consent control.
+- **Geo-Targeting [Premium]** – Automatically display the correct banner based on visitor location. GDPR opt-in for EU visitors, CCPA opt-out for US visitors without manual configuration.
+- **Multi-Region Banner Management [Premium]** – Configure and manage separate banner designs and compliance rules for different geographic regions from one dashboard.
 
 = 🔜 Coming Soon =
 - **Cookie Policy Generator** – Auto-generate a cookie policy page based on the cookies detected on your site.
 - **Automatic and Scheduled Scans [Premium]** – Set scans to run on a recurring schedule so your cookie list stays current without manual intervention.
-- **Geo-Targeting [Premium]** – Automatically display the correct banner based on visitor location. GDPR opt-in for EU visitors, CCPA opt-out for US visitors without manual configuration.
-- **Multi-Region Banner Management [Premium]** – Configure and manage separate banner designs and compliance rules for different geographic regions from one dashboard.
+
 
 ♿ Accessibility
 The Cookie Consent consent banner is built following accessibility best practices. For full website accessibility compliance, Cookie Consent works alongside [Ally](https://go.elementor.com/wp-repo-cookiez-ally/), Elementor\'s accessibility plugin that scans for and remediates accessibility issues across your site.
@@ -203,6 +204,9 @@ Cookie Consent uses a 3rd party service operated by Mixpanel to collect interact
 
 
 == Changelog ==
+= 0.0.9 - 2026-07-28 =
+* New: Geo targeted dynamic banner.
+
 = 0.0.8 - 2025-06-30 =
 * Tweak: Improved Elementor One migration flow.
 * Tweak: Updated Elementor packages.

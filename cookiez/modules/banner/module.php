@@ -28,7 +28,7 @@ class Module extends Module_Base {
 	];
 
 	private array $page_cookies = [];
-	private array $settings = [];
+	private array $settings     = [];
 
 	public function get_name(): string {
 		return 'Banner';
@@ -49,8 +49,15 @@ class Module extends Module_Base {
 		return $components;
 	}
 
+	public static function routes_list(): array {
+		return [
+			'Get_Geo',
+		];
+	}
+
 	/**
 	 * Get service URL
+	 *
 	 * @return string
 	 */
 	public static function get_service_api_url(): string {
@@ -84,11 +91,13 @@ class Module extends Module_Base {
 			'cookies'       => $this->page_cookies,
 			'translations'  => Utils::get_translations(),
 			'integrations'  => [
-				'wpConsentApiActive'    => Integration_Detect::is_wp_consent_api_active(),
-				'siteKitConsentMode'    => Integration_Detect::is_site_kit_consent_mode_enabled(),
+				'wpConsentApiActive'   => Integration_Detect::is_wp_consent_api_active(),
+				'siteKitConsentMode'   => Integration_Detect::is_site_kit_consent_mode_enabled(),
 				'delegateGcmToSiteKit' => Integration_Detect::should_delegate_gcm_to_site_kit(),
 			],
 			'cookiesHash'   => $this->get_cookies_hash(),
+			'geoEndpoint'   => rest_url( 'cookiez/v1/banner/geo' ),
+			'wpRestNonce'   => wp_create_nonce( 'wp_rest' ),
 		];
 
 		$banner_settings = apply_filters( 'cookiez/banner/settings', $banner_settings );
@@ -187,7 +196,9 @@ class Module extends Module_Base {
 			return;
 		}
 
-		wp_add_inline_script( 'banner', "
+		wp_add_inline_script(
+			'banner',
+			"
 			(function() {
 				const registerCookiezPreferencesAction = () => {
 					if ( ! window?.ElementorProFrontendConfig || ! window?.elementorFrontend?.utils?.urlActions ) {
@@ -221,18 +232,22 @@ class Module extends Module_Base {
 
 				waitForElementorPro().then( () => { registerCookiezPreferencesAction(); } );
 			}());
-		" );
+		"
+		);
 	}
 
 	public function __construct() {
 		add_action( 'elementor/dynamic_tags/register', [ $this, 'register_dynamic_tag' ] );
+
+		$this->register_routes();
 
 		if ( ! self::should_blocker_run() ) {
 			$this->register_components( [ 'Gutenberg_Preferences_Link_Block' ] );
 			return;
 		}
 
-		$this->settings     = Settings::get( Settings::COOKIEZ_SETTINGS );
+		$this->settings = Settings::get( Settings::COOKIEZ_SETTINGS );
+
 		$this->page_cookies = Cookie_Entry::find_all();
 
 		$this->register_components();

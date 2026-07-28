@@ -4,23 +4,57 @@
 
 namespace Composer\Autoload;
 
-class ComposerStaticInit16b3cd76a1ef4164d716d0e30bf6c941
+class ComposerStaticInit05aed460b732ae82793b75c16d9a0a2d
 {
     public static $files = array (
         '9db71c6726821ac61284818089584d23' => __DIR__ . '/..' . '/elementor/wp-one-package/runner.php',
     );
 
     public static $prefixLengthsPsr4 = array (
+        'M' =>
+        array (
+            'MaxMind\\WebService\\' => 19,
+            'MaxMind\\Exception\\' => 18,
+            'MaxMind\\Db\\' => 11,
+        ),
+        'G' =>
+        array (
+            'GeoIp2\\' => 7,
+        ),
         'E' =>
         array (
             'Elementor\\WPNotificationsPackage\\' => 33,
         ),
+        'C' =>
+        array (
+            'Composer\\CaBundle\\' => 18,
+        ),
     );
 
     public static $prefixDirsPsr4 = array (
+        'MaxMind\\WebService\\' =>
+        array (
+            0 => __DIR__ . '/..' . '/maxmind/web-service-common/src/WebService',
+        ),
+        'MaxMind\\Exception\\' =>
+        array (
+            0 => __DIR__ . '/..' . '/maxmind/web-service-common/src/Exception',
+        ),
+        'MaxMind\\Db\\' =>
+        array (
+            0 => __DIR__ . '/..' . '/maxmind-db/reader/src/MaxMind/Db',
+        ),
+        'GeoIp2\\' =>
+        array (
+            0 => __DIR__ . '/..' . '/geoip2/geoip2/src',
+        ),
         'Elementor\\WPNotificationsPackage\\' =>
         array (
             0 => __DIR__ . '/..' . '/elementor/wp-notifications-package/src',
+        ),
+        'Composer\\CaBundle\\' =>
+        array (
+            0 => __DIR__ . '/..' . '/composer/ca-bundle/src',
         ),
     );
 
@@ -31,9 +65,9 @@ class ComposerStaticInit16b3cd76a1ef4164d716d0e30bf6c941
     public static function getInitializer(ClassLoader $loader)
     {
         return \Closure::bind(function () use ($loader) {
-            $loader->prefixLengthsPsr4 = ComposerStaticInit16b3cd76a1ef4164d716d0e30bf6c941::$prefixLengthsPsr4;
-            $loader->prefixDirsPsr4 = ComposerStaticInit16b3cd76a1ef4164d716d0e30bf6c941::$prefixDirsPsr4;
-            $loader->classMap = ComposerStaticInit16b3cd76a1ef4164d716d0e30bf6c941::$classMap;
+            $loader->prefixLengthsPsr4 = ComposerStaticInit05aed460b732ae82793b75c16d9a0a2d::$prefixLengthsPsr4;
+            $loader->prefixDirsPsr4 = ComposerStaticInit05aed460b732ae82793b75c16d9a0a2d::$prefixDirsPsr4;
+            $loader->classMap = ComposerStaticInit05aed460b732ae82793b75c16d9a0a2d::$classMap;
 
         }, null, ClassLoader::class);
     }

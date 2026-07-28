@@ -22,6 +22,7 @@ declare global {
 			pluginEnv: Environment;
 			restRoot: string;
 			settings?: Record<string, unknown>;
+			maxmindLicenseKey?: string;
 			content?: Record<string, unknown>;
 			wpRestNonce: string;
 			planData?: PlanData;
@@ -51,6 +52,8 @@ declare global {
 			elementorCookieConsentId?: number;
 			elementorPreferencesBannerId?: number;
 			integrations?: IntegrationsState;
+			geoEndpoint?: string;
+			wpRestNonce?: string;
 		};
 		cookiezBanner?: {
 			screenManager?: ScreenManager;

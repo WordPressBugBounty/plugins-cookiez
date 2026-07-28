@@ -16,6 +16,7 @@ class Settings {
 	public const SUBSCRIPTION_ID = 'cookiez_subscription_id';
 	public const CLIENT_ID = 'cookiez_client_id';
 	public const REVIEW_DATA = 'cookiez_review_data';
+	public const MAXMIND_LICENSE_KEY = 'cookiez_maxmind_license_key';
 
 	/**
 	 * Returns plugin settings data by option name typecasted to an appropriate data type.
