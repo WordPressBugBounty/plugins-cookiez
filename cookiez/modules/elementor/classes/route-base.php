@@ -7,7 +7,6 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 use Cookiez\Classes\Rest\Route;
-use WP_REST_Request;
 
 class Route_Base extends Route {
 
@@ -29,11 +28,5 @@ class Route_Base extends Route {
 
 	public function get_name(): string {
 		return '';
-	}
-
-	public function get_permission_callback( WP_REST_Request $request ): bool {
-		$valid = $this->permission_callback( $request );
-
-		return $valid && user_can( $this->current_user_id, 'manage_options' );
 	}
 }

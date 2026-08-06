@@ -287,13 +287,14 @@ abstract class Route {
 	 * @return bool TRUE, if permission granted, FALSE otherwise
 	 */
 	public function permission_callback( WP_REST_Request $request ): bool {
-		// try to get current user
 		$this->current_user_id = get_current_user_id();
-		if ( $this->auth ) {
-			return $this->current_user_id > 0;
+
+		if ( ! $this->auth ) {
+			return true;
 		}
 
-		return true;
+		return $this->current_user_id > 0
+			&& user_can( $this->current_user_id, 'manage_options' );
 	}
 
 	/**

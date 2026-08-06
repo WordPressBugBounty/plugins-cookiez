@@ -3,7 +3,7 @@ Contributors: elemntor
 Tags: cookie consent, compliance, GDPR, CCPA
 Requires at least: 6.7
 Tested up to: 7.0
-Stable tag: 0.0.9
+Stable tag: 0.0.10
 Requires PHP: 7.4
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
@@ -204,6 +204,10 @@ Cookie Consent uses a 3rd party service operated by Mixpanel to collect interact
 
 
 == Changelog ==
+= 0.0.10 - 2026-08-05 =
+* Tweak: Admin UI fixes.
+* Tweak: Improve security on private routes.
+
 = 0.0.9 - 2026-07-28 =
 * New: Geo targeted dynamic banner.
 
