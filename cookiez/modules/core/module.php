@@ -38,13 +38,17 @@ class Module extends Module_Base {
 	/**
 	 * Prepends Settings / Upgrade / Connect links for this plugin on the Plugins screen.
 	 *
-	 * @param array|string $links            Existing action links.
-	 * @param string       $plugin_file_name Plugin basename relative to WP_PLUGIN_DIR.
-	 * @return array
+	 * @param array|string|null $links            Existing action links.
+	 * @param string            $plugin_file_name Plugin basename relative to WP_PLUGIN_DIR.
+	 * @return array|null
 	 */
-	public function add_plugin_links( $links, $plugin_file_name ): array {
+	public function add_plugin_links( $links, $plugin_file_name ) {
+		if ( ! is_array( $links ) ) {
+			return $links;
+		}
+
 		if ( ! str_ends_with( $plugin_file_name, '/cookiez.php' ) ) {
-			return (array) $links;
+			return $links;
 		}
 
 		$custom_links = [

@@ -17,11 +17,14 @@ class Wp_Consent_Api {
 		'advertising' => 'marketing',
 	];
 
+	private const WP_CONSENT_API_HANDLE = 'wp-consent-api';
+
 	public function __construct() {
 		$plugin = COOKIEZ_PLUGIN_BASE;
 		add_filter( "wp_consent_api_registered_{$plugin}", '__return_true' );
 		add_filter( 'wp_get_consent_type', [ self::class, 'get_consent_type' ] );
-		add_action( 'wp_head', [ self::class, 'output_initial_consent_script' ], 2 );
+		add_filter( 'wp_consent_api_waitfor_consent_hook', '__return_true' );
+		add_action( 'wp_enqueue_scripts', [ self::class, 'attach_initial_consent_script' ], PHP_INT_MAX - 99 );
 	}
 
 	public static function get_consent_type(): string {
@@ -31,13 +34,25 @@ class Wp_Consent_Api {
 		return 'opt-out' === $template_type ? 'optout' : 'optin';
 	}
 
-	public static function output_initial_consent_script(): void {
+	/**
+	 * Attaches the initial consent script after `wp-consent-api`'s own script,
+	 * since `wp_set_consent()` is only defined once that script has loaded.
+	 */
+	public static function attach_initial_consent_script(): void {
 		$settings = Settings::get( Settings::COOKIEZ_SETTINGS );
 
-		if ( empty( $settings['supportGcm'] ) ) {
+		if ( empty( $settings['supportGcm'] ) || ! wp_script_is( self::WP_CONSENT_API_HANDLE, 'registered' ) ) {
 			return;
 		}
 
+		wp_add_inline_script(
+			self::WP_CONSENT_API_HANDLE,
+			implode( "\n", self::build_consent_script_lines() ),
+			'after'
+		);
+	}
+
+	public static function build_consent_script_lines(): array {
 		$consent_type   = self::get_consent_type();
 		$stored_consent = Utils::parse_consent_cookie();
 
@@ -53,6 +68,6 @@ class Wp_Consent_Api {
 			}
 		}
 
-		wp_print_inline_script_tag( implode( "\n", $lines ) );
+		return $lines;
 	}
 }

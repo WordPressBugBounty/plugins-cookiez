@@ -3,7 +3,7 @@
         'name' => 'elementor/cookiez',
         'pretty_version' => 'dev-main',
         'version' => 'dev-main',
-        'reference' => '00fa2d2ed55bf79b9994a4d90500b62a1495858c',
+        'reference' => '821dfe100680b2d25bed26ed79c281bdb2c8fd0f',
         'type' => 'library',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
@@ -11,9 +11,9 @@
     ),
     'versions' => array(
         'composer/ca-bundle' => array(
-            'pretty_version' => '1.5.13',
-            'version' => '1.5.13.0',
-            'reference' => 'c008272789979f709f7fcb32c2ecf1d2db5e84e5',
+            'pretty_version' => '1.5.14',
+            'version' => '1.5.14.0',
+            'reference' => '0c8abba0634f637bd78c4e451981da368d403463',
             'type' => 'library',
             'install_path' => __DIR__ . '/./ca-bundle',
             'aliases' => array(),
@@ -22,7 +22,7 @@
         'elementor/cookiez' => array(
             'pretty_version' => 'dev-main',
             'version' => 'dev-main',
-            'reference' => '00fa2d2ed55bf79b9994a4d90500b62a1495858c',
+            'reference' => '821dfe100680b2d25bed26ed79c281bdb2c8fd0f',
             'type' => 'library',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),
