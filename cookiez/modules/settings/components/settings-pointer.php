@@ -78,7 +78,7 @@ class Settings_Pointer {
 			}
 
 			jQuery( document ).ready( function( $ ) {
-				$( '#toplevel_page_elementor-home' ).pointer( {
+				$( '#toplevel_page_cookiez-settings' ).pointer( {
 					content: '<?php echo wp_kses( $pointer_content, $allowed_tags ); ?>',
 					pointerClass: 'cookiez-settings-pointer',
 					position: <?php echo wp_json_encode( $pointer_position ); ?>,

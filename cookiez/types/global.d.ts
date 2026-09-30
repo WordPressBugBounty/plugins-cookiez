@@ -40,8 +40,7 @@ declare global {
 			isDevelopment: boolean;
 			isRTL: boolean;
 			language?: string;
-			subscription?: string;
-			planData?: PlanData;
+			publicApiKey?: string;
 			url?: string;
 			serviceUrl?: string;
 			settings: Record<string, unknown>;

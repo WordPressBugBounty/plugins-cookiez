@@ -1,4 +1,4 @@
-"use strict";(globalThis.webpackChunkcookiez=globalThis.webpackChunkcookiez||[]).push([[8101],{56603(e,o,i){i.r(o),i.d(o,{default:()=>A});var t=i(50602),n=i(77374),s=i(74456),r=i(76656),a=i(27957),c=i(33022),l=i(95726),d=i(57936),u=i(62646),h=i(85848),g=i(95231),k=i(38516),m=i(95830),p=i(96914),_=i(86087),y=i(27723),b=i(10790);const x=(0,g.I)(a.A)`
+"use strict";(globalThis.webpackChunkcookiez=globalThis.webpackChunkcookiez||[]).push([[8101],{56603(e,o,i){i.r(o),i.d(o,{default:()=>A});var t=i(50602),n=i(77374),s=i(74456),r=i(76656),a=i(34883),c=i(33022),l=i(95726),d=i(57936),u=i(62646),h=i(85848),g=i(95231),k=i(38516),m=i(95830),p=i(96914),_=i(86087),y=i(27723),b=i(10790);const x=(0,g.I)(a.A)`
 	position: relative;
 
 	> div {

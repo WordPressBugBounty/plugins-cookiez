@@ -77,13 +77,13 @@ class Module extends Module_Base {
 		$content            = Settings::get( Settings::COOKIEZ_CONTENT );
 		$default_language   = $content['languages'][0] ?? Sanitize_Content::FALLBACK_LANGUAGE;
 		$disabled_languages = $content['disabledLanguages'] ?? [];
+		$plan_data = get_option( Settings::PLAN_DATA );
 
 		$banner_settings = [
 			'isDevelopment' => defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG,
 			'isRTL'         => is_rtl(),
 			'language'      => Sanitize_Content::resolve_language( get_locale(), $default_language, $disabled_languages ),
-			'subscription'  => get_option( Settings::SUBSCRIPTION_ID ),
-			'planData'      => get_option( Settings::PLAN_DATA ),
+			'publicApiKey'  => $plan_data->public_api_key ?? '',
 			'url'           => Utils::get_current_page_url(),
 			'serviceUrl'    => self::get_service_api_url(),
 			'settings'      => $this->settings,

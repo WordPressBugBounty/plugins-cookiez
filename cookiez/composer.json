@@ -2,7 +2,7 @@
   "name": "elementor/cookiez",
   "require": {
     "elementor/wp-notifications-package": "1.2.0",
-    "elementor/wp-one-package": "1.0.66",
+    "elementor/wp-one-package": "1.0.72",
     "ext-json": "*",
     "geoip2/geoip2": "^2.13"
   },
